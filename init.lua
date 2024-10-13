@@ -110,7 +110,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',   opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -149,16 +149,36 @@ require('lazy').setup({
       end,
     },
   },
-
+  -- {
+  --   "folke/tokyonight.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {},
+  -- },
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    "ellisonleao/gruvbox.nvim",
     priority = 1000,
+    config = true,
+    opts = {
+
+    },
+
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
     config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end
   },
 
+  {
+    'renerocksai/telekasten.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' }
+  },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -166,25 +186,17 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'gruvbox_dark',
+        -- theme = 'tokyonight',
+
         component_separators = '|',
         section_separators = '',
       },
     },
   },
-
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = 'ibl',
-    opts = {},
-  },
-
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-
+  { 'numToStr/Comment.nvim', opts = {}
+  },
   -- Fuzzy Finder (files, lsp, etc)
   {
     'nvim-telescope/telescope.nvim',
@@ -218,7 +230,7 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
+  require 'kickstart.plugins.autoformat',
   -- require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -227,7 +239,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
@@ -235,10 +247,12 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
+-- Kamili
+vim.wo.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -310,7 +324,9 @@ pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>b', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+
+---[[kamila]] this shortcut better serves as comment_toggle_linewise
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -401,7 +417,9 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-
+-- My keys Kamili
+vim.keymap.set('i', 'jk', "<ESC>", { desc = '[KC] Use jk to exit insert mode' })
+vim.keymap.set('n', '<leader>x', ":qa!", { desc = '[KC] exit vim' })
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -426,8 +444,8 @@ local on_attach = function(_, bufnr)
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+  nmap('<leader>s', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+  nmap('<leader>S', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -448,16 +466,16 @@ local on_attach = function(_, bufnr)
 end
 
 -- document existing key chains
-require('which-key').register {
-  ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-  ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-  ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
-  ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-  ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+require('which-key').add {
+  { '<leader>c', group = '[C]ode' },
+  { '<leader>d', group = '[D]ocument' },
+  { '<leader>g', group = '[G]it' },
+  { '<leader>h', group = 'More git' },
+  { '<leader>r', group = '[R]ename' },
+  { '<leader>s', group = '[S]earch' },
+  { '<leader>w', group = '[W]orkspace' },
+  { '<leader>z', group = '[Z]ettelkasten' },
 }
-
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require('mason').setup()
@@ -473,9 +491,9 @@ require('mason-lspconfig').setup()
 --  define the property 'filetypes' to the map in question.
 local servers = {
   -- clangd = {},
-  -- gopls = {},
+  gopls = {},
   -- pyright = {},
-  -- rust_analyzer = {},
+  rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
@@ -483,6 +501,7 @@ local servers = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
+      diagnostics = { disable = { 'missing-fields' } },
     },
   },
 }
@@ -511,6 +530,28 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+-- [[ Configure telekasten ]]
+
+require("telekasten")
+-- Configure telekasten
+vim.keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>")
+vim.keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>")
+vim.keymap.set("n", "<leader>zd", "<cmd>Telekasten goto_today<CR>")
+vim.keymap.set("n", "<leader>zz", "<cmd>Telekasten follow_link<CR>")
+vim.keymap.set("n", "<leader>zn", "<cmd>Telekasten new_note<CR>")
+vim.keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>")
+vim.keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>")
+vim.keymap.set("n", "<leader>zy", "<cmd>Telekasten yank_notelink<CR>")
+vim.keymap.set("n", "<leader>zt", "<cmd>Telekasten toggle_todo<CR>")
+vim.keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>")
+vim.keymap.set("n", "<leader>zT", "<cmd>Telekasten goto_today<CR>")
+vim.keymap.set("n", "<leader>z#", "<cmd>Telekasten .show_tags({i = true})<CR>")
+vim.keymap.set("n", "<leader>zN", "<cmd>Telekasten new_templated_note<CR>")
+
+-- [[ Configure nvimtree ]]
+
+vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>")
+-- ["<leader>zp"] = {":lua require('telekasten').preview_img()<CR>", "preview image"},
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -559,6 +600,16 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+-- Format on writes https://www.reddit.com/r/neovim/comments/16wb2dt/can_anyone_share_their_kickstartnvim_for_go
+vim.api.nvim_create_autocmd('BufWritePre', {
+  buffer = vim.fn.bufnr(),
+  callback = function()
+    vim.lsp.buf.format({ timeout_ms = 3000 })
+  end,
+})
+
+
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
