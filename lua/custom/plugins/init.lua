@@ -50,10 +50,14 @@ return {
   },
   {
     'renerocksai/telekasten.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim' },
+    dependencies = { 'nvim-telescope/telescope.nvim', 'renerocksai/calendar-vim' },
     config = function()
       require('telekasten')
     end
+  },
+  {
+    'renerocksai/calendar-vim',
+
   },
   -- from https://www.reddit.com/r/neovim/comments/118unhi/nvimtree_follow_open_files_buffers/
   update_focused_file = {

@@ -1,7 +1,7 @@
 -- this is a snippet from kickstart README.md
 vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-
-neo = {
+-- [[ Configure nvimtree ]]
+local neo = {
   "nvim-neo-tree/neo-tree.nvim",
   version = "v3.x",
   dependencies = {
@@ -13,6 +13,7 @@ neo = {
   config = function()
     require('neo-tree').setup {
 
+      vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>")
     }
   end,
 }

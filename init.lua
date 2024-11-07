@@ -149,21 +149,6 @@ require('lazy').setup({
       end,
     },
   },
-  -- {
-  --   "folke/tokyonight.nvim",
-  --   lazy = false,
-  --   priority = 1000,
-  --   opts = {},
-  -- },
-  {
-    "ellisonleao/gruvbox.nvim",
-    priority = 1000,
-    config = true,
-    opts = {
-
-    },
-
-  },
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -175,10 +160,6 @@ require('lazy').setup({
     end
   },
 
-  {
-    'renerocksai/telekasten.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim' }
-  },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -326,14 +307,7 @@ pcall(require('telescope').load_extension, 'fzf')
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader>b', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 
----[[kamila]] this shortcut better serves as comment_toggle_linewise
-vim.keymap.set('n', '<leader>/', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
-  })
-end, { desc = '[/] Fuzzily search in current buffer' })
+
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
@@ -415,11 +389,12 @@ end, 0)
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+vim.keymap.set('n', '<leader>D', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 -- My keys Kamili
 vim.keymap.set('i', 'jk', "<ESC>", { desc = '[KC] Use jk to exit insert mode' })
 vim.keymap.set('n', '<leader>x', ":qa!", { desc = '[KC] exit vim' })
+-- vim.keymap.set('n', '<leaderll>v', ":ed ~/.config/nvim/", { desc = '[KC] edit nvim ' })
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -530,27 +505,7 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
--- [[ Configure telekasten ]]
 
-require("telekasten")
--- Configure telekasten
-vim.keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>")
-vim.keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>")
-vim.keymap.set("n", "<leader>zd", "<cmd>Telekasten goto_today<CR>")
-vim.keymap.set("n", "<leader>zz", "<cmd>Telekasten follow_link<CR>")
-vim.keymap.set("n", "<leader>zn", "<cmd>Telekasten new_note<CR>")
-vim.keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>")
-vim.keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>")
-vim.keymap.set("n", "<leader>zy", "<cmd>Telekasten yank_notelink<CR>")
-vim.keymap.set("n", "<leader>zt", "<cmd>Telekasten toggle_todo<CR>")
-vim.keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>")
-vim.keymap.set("n", "<leader>zT", "<cmd>Telekasten goto_today<CR>")
-vim.keymap.set("n", "<leader>z#", "<cmd>Telekasten .show_tags({i = true})<CR>")
-vim.keymap.set("n", "<leader>zN", "<cmd>Telekasten new_templated_note<CR>")
-
--- [[ Configure nvimtree ]]
-
-vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>")
 -- ["<leader>zp"] = {":lua require('telekasten').preview_img()<CR>", "preview image"},
 
 -- [[ Configure nvim-cmp ]]
