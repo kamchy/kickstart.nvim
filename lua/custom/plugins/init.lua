@@ -59,14 +59,14 @@ return {
     'renerocksai/calendar-vim',
 
   },
-  -- from https://www.reddit.com/r/neovim/comments/118unhi/nvimtree_follow_open_files_buffers/
-  update_focused_file = {
-    enable = true,
-  },
   {
     "nvim-tree/nvim-tree.lua",
     opts = {
       git = {
+        enable = true,
+      },
+      -- from https://www.reddit.com/r/neovim/comments/118unhi/nvimtree_follow_open_files_buffers/
+      update_focused_file = {
         enable = true,
       },
 
